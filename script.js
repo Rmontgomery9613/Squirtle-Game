@@ -117,8 +117,9 @@ document.addEventListener('keydown', (event) => {
   if (!Number.isFinite(stamp) || Math.abs(stamp - performance.now()) > 10000) stamp = performance.now();
   if (stamp < firstAt) return;
   pressedAt = stamp;
-  // Keep all five beeps playing, including if A was pressed early.
-  if (stamp >= fifthAt) finish(pressedAt - fifthAt);
+  // Show the result immediately for early AND late presses.
+  // Already-scheduled audio continues so the five-beep sequence stays intact.
+  finish(pressedAt - fifthAt);
 });
 document.addEventListener('keyup', (event) => {
   if (event.code === 'KeyA') { keyHeld = false; waitingForRelease = false; }
