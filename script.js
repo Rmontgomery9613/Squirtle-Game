@@ -40,12 +40,7 @@ function resetDisplay() {
   setText('result', 'Listen...'); setText('detail', 'Press A at the START of beep 5'); setText('message', '');
   lights.forEach(el => el.classList.remove('on'));
 }
-function finish(deltaMs) {
-  if (!active) return;
-  active = false;
-  clearTimers();
-  startButton.disabled = false;
-  offsetInput.disabled = false;
+function showResult(deltaMs) {
   if (deltaMs === null) {
     setText('result', 'Missed'); $('result').className = 'result bad';
     setText('detail', 'No A press detected. Click Start Test to retry.');
@@ -61,6 +56,14 @@ function finish(deltaMs) {
   setText('detail', `${label} | Raw: ${signed(deltaMs)} ms | Offset: ${signed(currentOffset)} ms`);
   setText('message', won ? "You got the squirtle, you're better than Genlife." : 'You missed the squirtle, you must be Genlife.');
   $('message').className = `message ${won ? 'good' : 'bad'}`;
+}
+function completeTrial() {
+  if (!active) return;
+  active = false;
+  clearTimers();
+  startButton.disabled = false;
+  offsetInput.disabled = false;
+  if (pressedAt === null) showResult(null);
 }
 async function start() {
   if (active) return;
@@ -101,9 +104,9 @@ async function start() {
     osc.connect(gain); gain.connect(context.destination);
     osc.start(at); osc.stop(at + BEEP_DURATION_SECONDS + 0.001);
     nodes.push(osc);
-    later(() => { if (active && trialId === id) lights[i].classList.add('on'); }, firstAt + i * 500 - performance.now());
+    later(() => { if (trialId === id) lights[i].classList.add('on'); }, firstAt + i * 500 - performance.now());
   }
-  later(() => { if (active && trialId === id) finish(pressedAt === null ? null : pressedAt - fifthAt); }, fifthAt + AFTER_FIFTH_MS - performance.now());
+  later(() => { if (active && trialId === id) completeTrial(); }, fifthAt + AFTER_FIFTH_MS - performance.now());
 }
 startButton.addEventListener('click', start);
 document.addEventListener('keydown', (event) => {
@@ -119,7 +122,7 @@ document.addEventListener('keydown', (event) => {
   pressedAt = stamp;
   // Show the result immediately for early AND late presses.
   // Already-scheduled audio continues so the five-beep sequence stays intact.
-  finish(pressedAt - fifthAt);
+  showResult(pressedAt - fifthAt);
 });
 document.addEventListener('keyup', (event) => {
   if (event.code === 'KeyA') { keyHeld = false; waitingForRelease = false; }
