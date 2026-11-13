@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#151b28"><title>Squirtle Game</title>
+<link rel="stylesheet" href="style.css">
+<script src="script.js" defer></script>
+</head>
+<body>
+<main class="game" aria-labelledby="heading">
+  <h1 id="heading">SQUIRTLE GAME</h1>
+  <p class="subtitle">Press <kbd>A</kbd> when the 5th beep begins</p>
+  <div class="lights" aria-label="Five beep indicators">
+    <span class="light" aria-label="Beep 1"></span><span class="light" aria-label="Beep 2"></span><span class="light" aria-label="Beep 3"></span><span class="light" aria-label="Beep 4"></span><span class="light" aria-label="Beep 5"></span>
+  </div>
+  <div id="result" class="result" aria-live="polite">Ready</div>
+  <p id="detail" class="detail">Click Start Test, then press A</p>
+  <p id="message" class="message" aria-live="polite"></p>
+  <div class="offset-row"><label for="offset">Timing offset (ms):</label><input id="offset" type="number" inputmode="decimal" step="any" value="0" autocomplete="off"></div>
+  <p class="hint">Adjusted result = measured result + offset</p>
+  <button id="start" type="button">Start Test</button>
+  <p class="footnote">Five beeps, 500 ms apart. A press within ±8 ms (adjusted) wins.</p>
+  <p class="footnote">Keep this tab active and use wired audio for more consistent timing.</p>
+</main>
+</body>
+</html>
